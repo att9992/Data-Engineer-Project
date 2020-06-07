@@ -62,4 +62,6 @@ The DAG is comprised of a few main stages:
   + Data quality operators are used at appropriate position. In case of DAG failures email triggers can be configured to let the team know about pipeline failures.
 
 * Make it available to 100+ people
+  + The more people accessing the database the more cpu resources you need to get a fast experience. By using a distributed database you can improve your replications and partitioning to get faster query results for each user.
   + We can set the concurrency limit for your Amazon Redshift cluster. While the concurrency limit is 50 parallel queries for a single period of time, this is on a per cluster basis, meaning you can launch as many clusters as fit for you business.
+  
