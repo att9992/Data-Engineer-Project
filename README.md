@@ -52,6 +52,54 @@ The DAG is comprised of a few main stages:
 * The fact table, github_repo_popularity, is then built by joining data from two of the dimension tables.
 * A final data validation check is performed on the fact table to ensure we have data.
 
+## Data Dictionary
+
+***github_repos*** table
+| Field         | Type          | PK    |
+| ------------- |:-------------:| -----:|
+| id            | int | Yes|
+| owner_id      | int      |    |
+| full_name     | varchar      |    |
+|repo_detail_url| varchar   |   |
+|is_fork | boolean |   |
+|repo_commits_url| varchar    |   |
+|language| varchar   |   |
+|license | varchar   |    |
+|size  |  int   |   |
+|stars |  int   |    |
+|forks |  int    |     |
+|open_issues| int  |   |
+|created_at| timestamp    |     |
+
+***github_user*** table
+| Field         | Type          | PK    |
+| ------------- |:-------------:| -----:|
+| id            | int | Yes|
+| name      | varchar      |    |
+
+***github_repo_popularity*** table
+| Field         | Type          | PK    |
+| ------------- |:-------------:| -----:|
+| github_repo_id| int | Yes|
+| starts    | int      |    |
+|forks|int|  |
+|total_hn_points|int|   |
+|total_hn_comment| int  |  |
+
+***hacker_new_posts_ref_github*** table
+| Field         | Type          | PK    |
+| ------------- |:-------------:| -----:|
+| id            | int | Yes|
+| title      | varchar      |    |
+|post_type|varchar  | |
+|author|varchar   |   |
+|created_at| timestamp |   |
+|url  | varchar   |   |
+|github_repo_full_name|  varchar    |   |
+|points|  int    |     |
+|num_comments|  int  |
+
+
 ## Scenarios
 * Data increase by 100x. 
   + Redshift: Analytical database, optimized for aggregation, also good performance for read-heavy workloads
