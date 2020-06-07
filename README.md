@@ -2,15 +2,15 @@
 
 ## Project description
 
-The aim for this project is to pull in data from 2 different data sources:
-
-* List of GitHub repositories created between 29 Oct 2007 and 12 Nov 2010 - https://www.kaggle.com/qopuir/github-repositories
-* Hacker News posts (all posts since 2006) - https://www.kaggle.com/santiagobasulto/all-hacker-news-posts-stories-askshow-hn-polls
-
-This data will then be prepared for analysis to answer questions such as:
+The aim for this project is to answer such as:
 
 * Which Github repository are the most popular according to Hacker News activity?
 * Which Github users are generating the most activity on Hacker News?
+
+Data is downloaded from Kaggle's sources:
+
+* List of GitHub repositories created between 29 Oct 2007 and 12 Nov 2010 - https://www.kaggle.com/qopuir/github-repositories
+* Hacker News posts (all posts since 2006) - https://www.kaggle.com/santiagobasulto/all-hacker-news-posts-stories-askshow-hn-polls
 
 ## Tooling
 
@@ -21,6 +21,15 @@ The tools used on this project are the same as we have been learning during the 
 * Apache Airflow as an Orchestration Tool
 
 Those tools are widely used and considered as industry standards. The community is massive and the tools provide support to several features. Apache Airflow, in special, gives freedom to create new plugins and adapt it to any needs that we might have. 
+
+## Data assessment
+
+* The GitHub repo data is just for a repository created between certain dates so I decided to limit the date range for which we pull in Hacker News data. 
+* The language, license, size, stars, forks, open_issues and created_at columns for Github repository data are sometimes empty
+* The num_comments column for Hacker News posts can sometimes be empty.
+* Some of the Hacker News URLs are very long, hence the maximum field length for this column has been set to 8192.
+* To analyse Hacker News activity related to GitHub repository, rows are filtered for which the URL contains a GitHub URL. This is done when loading data from the staging table into the hacker_news_posts dimension table using a regular expression.
+
 
 ## Data model
 The final data model include four tables, being three of them dimensions and a fact table.
@@ -43,3 +52,14 @@ The DAG is comprised of a few main stages:
 * The fact table, github_repo_popularity, is then built by joining data from two of the dimension tables.
 * A final data validation check is performed on the fact table to ensure we have data.
 
+## Scenarios
+* Data increase by 100x. 
+  + Redshift: Analytical database, optimized for aggregation, also good performance for read-heavy workloads
+  + Increase EMR cluster size to handle bigger volume of data
+
+* Pipelines would be run on 7 am daily. 
+  + DAG is scheduled to run every 5 minutes and can be configured to run every morning at 7 AM if required.
+  + Data quality operators are used at appropriate position. In case of DAG failures email triggers can be configured to let the team know about pipeline failures.
+
+* Make it available to 100+ people
+  + We can set the concurrency limit for your Amazon Redshift cluster. While the concurrency limit is 50 parallel queries for a single period of time, this is on a per cluster basis, meaning you can launch as many clusters as fit for you business.
